@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/images"/>
+    <qresource prefix="/aditionFiles"/>
+    <qresource prefix="/statusIcons">
+        <file>online.ico</file>
+        <file>offline.ico</file>
+        <file>busy.ico</file>
+    </qresource>
+</RCC>
