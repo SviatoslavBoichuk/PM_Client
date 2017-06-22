@@ -4,6 +4,7 @@
 #include <mutex>
 #include <condition_variable>
 #include <QMimeDatabase>
+#include <QDateTime>
 
 bool g_bFlag = false;
 std::condition_variable g_condVar;
@@ -37,7 +38,6 @@ MainWindow::MainWindow(CClientNetwork *pNet, const user_st& user_info, int count
 
     g_bFlag = true;
     g_condVar.notify_one();
-
 }
 
 void MainWindow::MessageHandler()
@@ -67,11 +67,7 @@ void MainWindow::MessageHandler()
             for(int i = 0; i < count; i++)
             {
                 pushItem(makeItem(contacts_st[i]));
-
                 user_st us = contacts_st[i];
-
-                qDebug() << us.id << "  " << us.firstname << " " << us.secondname;
-
                 contacts.push_back(us);
             }
 
@@ -95,7 +91,14 @@ void MainWindow::MessageHandler()
 
                 m_pNet->NonBlockingRecv(textMessage, msg.msg_size, 1);
 
-                ui->disp_msg->addItem(QString(textMessage));
+                QString name = GetUserNameById(msg.who);
+
+                QString message = QString("[") + QDateTime::currentDateTime().toString()
+                        + QString("] ") + GetUserNameById(msg.who) + QString(": ") + QString(textMessage);
+
+                m_msgMap.PushMessage(msg.who, message );
+
+                // ui->disp_msg->addItem(QString(textMessage));
 
                 free(textMessage);
             }
@@ -135,6 +138,21 @@ void MainWindow::MessageHandler()
 bool MainWindow::GetCondition()
 {
     return g_bFlag;
+}
+
+const QString MainWindow::GetUserNameById(int id)
+{
+    QString retval;
+
+    for(int i = 0; i < contacts.size(); i++)
+    {
+        if (contacts[i].id == id)
+        {
+            retval += QString(contacts[i].firstname) + QString(" ") + QString(contacts[i].secondname);
+        }
+    }
+
+    return retval;
 }
 
 void MainWindow::GetContactList(user_st ** contacts, server_response_st& response, int* count)
@@ -369,11 +387,6 @@ void MainWindow::on_pushButton_clicked()
     ui->newContacts->clear();
 }
 
-void MainWindow::on_disp_msg_itemChanged(QListWidgetItem *item)
-{
-    delete ui->disp_msg->takeItem(ui->disp_msg->row(item));
-}
-
 void MainWindow::on_pushButton_2_clicked()
 {
     g_bFlag = false;
@@ -399,4 +412,27 @@ void MainWindow::on_pushButton_2_clicked()
 
     g_bFlag = true;
     g_condVar.notify_one();
+}
+
+void MainWindow::on_disp_msg_itemClicked(QListWidgetItem *item)
+{
+    int index = ui->contactList->currentIndex().row();
+    index = contacts[index].id;
+    m_msgMap.PopMessage(index, ui->disp_msg->currentIndex().row() );
+
+    delete item;
+}
+
+void MainWindow::on_contactList_itemClicked(QListWidgetItem *item)
+{
+    ui->disp_msg->clear();
+
+    int index = ui->contactList->currentIndex().row();
+
+    QVector<QString> msgs = m_msgMap.GetMessages(contacts[index].id);
+
+    for(int i = 0; i < msgs.size(); i++ )
+    {
+        ui->disp_msg->addItem(msgs[i]);
+    }
 }

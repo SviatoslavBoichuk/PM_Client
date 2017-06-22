@@ -32,7 +32,8 @@ SOURCES += \
     csettings.cpp \
     login.cpp \
     cregistartion.cpp \
-    cclientnetwork.cpp
+    cclientnetwork.cpp \
+    cusersmessages.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -41,7 +42,8 @@ HEADERS += \
     login.h \
     cregistartion.h \
     cclientnetwork.h \
-    pm_packets.h
+    pm_packets.h \
+    cusersmessages.h
 
 FORMS += \
         mainwindow.ui \

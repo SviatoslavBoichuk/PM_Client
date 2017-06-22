@@ -12,7 +12,7 @@ login::login(QWidget *parent) :
     UiSetUp();
 
     //m_pNet = new CClientNetwork(g_cDefaultIp, g_ciServerPort);
-    m_pNet = new CClientNetwork(g_cServerIp, g_ciServerPort);
+    m_pNet = new CClientNetwork(g_cDefaultIp, g_ciServerPort);
     if ( !m_pNet->ConnectToServer() )
     {
         QMessageBox::warning(this, "Warning!", "Can't connect to server! Restart programm!");

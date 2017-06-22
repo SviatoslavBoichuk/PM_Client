@@ -15,6 +15,7 @@
 
 #include "cclientnetwork.h"
 #include "cuser.h"
+#include "cusersmessages.h"
 
 
 const long g_clMaxFileSize = 5242880l;
@@ -47,6 +48,8 @@ private:
 
     static bool GetCondition();
 
+    const QString GetUserNameById(int id);
+
 private slots:
 
     void on_actionExit_triggered();
@@ -57,9 +60,11 @@ private slots:
     void on_search_new_button_clicked();
     void on_pushButton_clicked();
 
-    void on_disp_msg_itemChanged(QListWidgetItem *item);
-
     void on_pushButton_2_clicked();
+
+    void on_disp_msg_itemClicked(QListWidgetItem *item);
+
+    void on_contactList_itemClicked(QListWidgetItem *item);
 
 private:
     Ui::MainWindow *ui;
@@ -74,6 +79,8 @@ private:
     QString     m_filePath;
     QFile * m_pFileHandle;
     CClientNetwork * m_pNet;
+
+    CUsersMessages m_msgMap;
 
     int m_iUserIndex;
 
