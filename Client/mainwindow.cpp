@@ -88,17 +88,16 @@ void MainWindow::MessageHandler()
             if ( strcmp(msg.mime_type, "text") == 0 )
             {
                 char * textMessage = (char*)malloc(sizeof(char) * msg.msg_size);
-
                 m_pNet->NonBlockingRecv(textMessage, msg.msg_size, 1);
 
+
                 QString name = GetUserNameById(msg.who);
+                ui->newContacts->addItem(QString("You have received a new message from " + name));
 
                 QString message = QString("[") + QDateTime::currentDateTime().toString()
-                        + QString("] ") + GetUserNameById(msg.who) + QString(": ") + QString(textMessage);
+                        + QString("] ") + name + QString(": ") + QString(textMessage);
 
                 m_msgMap.PushMessage(msg.who, message );
-
-                // ui->disp_msg->addItem(QString(textMessage));
 
                 free(textMessage);
             }
