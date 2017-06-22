@@ -1,9 +1,13 @@
 #ifndef CREGISTARTION_H
 #define CREGISTARTION_H
 
+#include <QDebug>
 #include <QDialog>
 #include <QFileDialog>
 #include <QMessageBox>
+
+#include <string.h>
+
 #include "cclientnetwork.h"
 #include "cuser.h"
 
@@ -36,8 +40,6 @@ private slots:
     void on_accept_button_clicked();
 
     void on_checkBox_clicked();
-
-    void on_openIcon_clicked();
 
     void on_cancel_button_clicked();
 

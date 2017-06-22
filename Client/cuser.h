@@ -1,18 +1,20 @@
 #ifndef CUSER_H
 #define CUSER_H
 
+#include <new>
+
 #include <QString>
-#include <QPixmap>
+
 #include "pm_packets.h"
 
 struct UserData
 {
-    QString m_userName;    // a.k. login
+    int     m_id;          // user ID
+    QString m_userName;    // userName
     QString m_firstName;   // name
     QString m_secondName;  // surname
     QString m_userMail;    // email
     QString m_userPass;    // pass
-    QPixmap * m_pUserIcon; // icon
     State   m_userState;   // state
 };
 
@@ -26,14 +28,14 @@ public:
 
     // CUser(const UserData& data);
     CUser(const QString& name, const QString& firstName, const QString& secondName,
-          const QString& mail, const QString& pass , const State state);
+          const QString& mail, const QString& pass , const State state, int ID);
 
-    const QString& getFirstName() const;
+    const QString& getFirstName()  const;
     const QString& getSecondName() const;
-    const QString& getUserName() const;
-    const QString& getUserMail() const;
-    const QString& getUserPass() const;
-    const QPixmap* getUserIcon() const;
+    const QString& getUserName()   const;
+    const QString& getUserMail()   const;
+    const QString& getUserPass()   const;
+    int      getId()        const;
     State    getUserState() const;
 
     void SetUserName(const QString& userName);
@@ -42,10 +44,8 @@ public:
     void SetFirstName(const QString& name);
     void SetSecondName(const QString& surname);
     void SetUserState(const State state);
-    void SetUserIcon(const QString& path);
+    void SetId(int ID);
 
-
-    QByteArray serialize();
 private:
     UserData* m_pUserData;
 };

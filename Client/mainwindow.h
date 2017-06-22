@@ -1,13 +1,23 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <thread>
+
+#include <QDebug>
 #include <QFile>
+#include <QFileDialog>
 #include <QMainWindow>
+#include <QMessageBox>
+#include <QListWidgetItem>
 #include <QString>
 
-#include "cclientnetwork.h"
+#include <stdio.h>
 
-const long g_clMaxFileZie = 5242880l;
+#include "cclientnetwork.h"
+#include "cuser.h"
+
+
+const long g_clMaxFileSize = 5242880l;
 
 namespace Ui {
 class MainWindow;
@@ -18,32 +28,57 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
+    explicit MainWindow(CClientNetwork* pNet, const user_st& user_info,int count,
+                        const user_st * p_contacts, QWidget *parent = 0);
     ~MainWindow();
 
 private:
     bool checkFileSize();
-
+    void showContactList();
     void setUpComboBox();
+    void setUserInfo(const user_st& info);
+    QListWidgetItem makeItem(const user_st& user);
+    void pushItem(const QListWidgetItem& item);
+
+    void GetContactList(user_st ** contacts,
+                        server_response_st& response, int* count);
+
+    void MessageHandler();
+
+    static bool GetCondition();
 
 private slots:
 
     void on_actionExit_triggered();
     void on_attach_file_button_clicked();
 
-    void on_comboBox_currentIndexChanged(int index);
     void on_send_button_clicked();
+
+    void on_search_new_button_clicked();
+    void on_pushButton_clicked();
+
+    void on_disp_msg_itemChanged(QListWidgetItem *item);
+
+    void on_pushButton_2_clicked();
 
 private:
     Ui::MainWindow *ui;
     const int m_ciStatusMessageTimeOut      = 1000;
     const QString m_cSearchPlaceholderText  = "Search";
     const QString m_cMessagePlaceholderText = "Type message here...";
-    const QString m_cFileTypeFilter         = "*.jpg *.jpeg *.png";
+    const QString m_cFileTypeFilter         = "*.*";
 
-    //State eUserState;
-    QString m_filePath;
+    QVector<user_st> contacts;
+
+    CUser       userInfo;
+    QString     m_filePath;
     QFile * m_pFileHandle;
+    CClientNetwork * m_pNet;
+
+    int m_iUserIndex;
+
+    std::thread* backgroundThread;
+    QVector<QListWidgetItem> itemsList;
 };
 
 #endif // MAINWINDOW_H

@@ -1,20 +1,17 @@
 #include "cuser.h"
-#include <new>
 
 CUser::CUser()
 {
     m_pUserData = new (std::nothrow) UserData;
-    m_pUserData->m_pUserIcon = nullptr;
 }
 
 CUser::~CUser()
 {
-    delete m_pUserData->m_pUserIcon;
     delete m_pUserData;
 }
 
 CUser::CUser(const QString &name, const QString &firstName, const QString &secondName, const QString &mail,
-             const QString &pass, const State state)
+             const QString &pass, const State state, int ID)
 {
     m_pUserData = new (std::nothrow) UserData;
 
@@ -24,8 +21,7 @@ CUser::CUser(const QString &name, const QString &firstName, const QString &secon
     m_pUserData->m_firstName = firstName;
     m_pUserData->m_secondName = secondName;
     m_pUserData->m_userState = state;
-
-    m_pUserData->m_pUserIcon = nullptr;
+    m_pUserData->m_id = ID;
 }
 
 const QString &CUser::getSecondName() const
@@ -53,9 +49,9 @@ const QString &CUser::getUserPass() const
     return m_pUserData->m_userPass;
 }
 
-const QPixmap *CUser::getUserIcon() const
+int CUser::getId() const
 {
-    return m_pUserData->m_pUserIcon;
+    return m_pUserData->m_id;
 }
 
 State CUser::getUserState() const
@@ -93,27 +89,7 @@ void CUser::SetUserState(const State state)
     m_pUserData->m_userState = state;
 }
 
-void CUser::SetUserIcon(const QString &path)
+void CUser::SetId(int ID)
 {
-    if ( !path.isEmpty() )
-    {
-        m_pUserData->m_pUserIcon = new QPixmap(path);
-    }
-}
-
-QByteArray CUser::serialize()
-{
-    QByteArray buffer;
-    QDataStream stream(&buffer, QIODevice::WriteOnly);
-    stream.setVersion(QDataStream::Qt_5_9);
-
-    stream << m_pUserData->m_userName << m_pUserData->m_userPass << m_pUserData->m_userMail
-           << m_pUserData->m_firstName << m_pUserData->m_secondName;
-
-    if( m_pUserData->m_pUserIcon != nullptr )
-    {
-        stream << (*m_pUserData->m_pUserIcon);
-    }
-
-    return buffer;
+    m_pUserData->m_id = ID;
 }

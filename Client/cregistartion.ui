@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>600</width>
+    <width>420</width>
     <height>340</height>
    </rect>
   </property>
@@ -18,7 +18,7 @@
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>580</width>
+     <width>400</width>
      <height>310</height>
     </rect>
    </property>
@@ -177,48 +177,6 @@
     </property>
     <property name="text">
      <string>!(may be unsafe)</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="openIcon">
-    <property name="geometry">
-     <rect>
-      <x>420</x>
-      <y>270</y>
-      <width>150</width>
-      <height>25</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Open item</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="userIcon_label">
-    <property name="geometry">
-     <rect>
-      <x>420</x>
-      <y>30</y>
-      <width>150</width>
-      <height>160</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>&lt;Image&gt;</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_8">
-    <property name="geometry">
-     <rect>
-      <x>420</x>
-      <y>235</y>
-      <width>100</width>
-      <height>25</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Choose icon</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_9">

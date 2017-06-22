@@ -1,18 +1,16 @@
 #include "cregistartion.h"
 #include "ui_cregistartion.h"
-#include <QDebug>
-#include <string.h>
 
 CRegistartion::CRegistartion(CClientNetwork *network, QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::CRegistartion),
-    m_pUser(nullptr)
+    ui(new Ui::CRegistartion), m_pUser(nullptr),
+    m_pNet(network)
 {
     ui->setupUi(this);
+    this->setWindowTitle("Registration");
 
     setUpEchoMode(true);
     m_pUser = new (std::nothrow) CUser;
-    m_pNet = network;
 }
 
 CRegistartion::~CRegistartion()
@@ -78,11 +76,11 @@ void CRegistartion::copyData(register_st &reg)
 {
     memset( (void*)&reg, 0, sizeof(reg));
 
-    memcpy(reg.firstname,  m_pUser->getFirstName().toUtf8().data(), BUFFER_SIZE);
-    memcpy(reg.secondname, m_pUser->getSecondName().toUtf8().data(),BUFFER_SIZE);
-    memcpy(reg.username,   m_pUser->getUserName().toUtf8().data(),  BUFFER_SIZE);
-    memcpy(reg.password,   m_pUser->getUserPass().toUtf8().data(),  BUFFER_SIZE);
-    memcpy(reg.email,      m_pUser->getUserMail().toUtf8().data(),  BUFFER_SIZE);
+    memcpy(reg.firstname,  m_pUser->getFirstName().toUtf8().data(), m_pUser->getFirstName().length());
+    memcpy(reg.secondname, m_pUser->getSecondName().toUtf8().data(),m_pUser->getSecondName().length());
+    memcpy(reg.username,   m_pUser->getUserName().toUtf8().data(),  m_pUser->getUserName().length());
+    memcpy(reg.password,   m_pUser->getUserPass().toUtf8().data(),  m_pUser->getUserPass().length());
+    memcpy(reg.email,      m_pUser->getUserMail().toUtf8().data(),  m_pUser->getUserMail().length());
 }
 
 void CRegistartion::checkErrors(QString &warningMessage)
@@ -118,7 +116,7 @@ void CRegistartion::sendRegRequest()
     register_st reg_st;
     copyData(reg_st);
 
-    const int currentLen = BUFFER_SIZE * 5;
+    const int currentLen = sizeof(reg_st);
 
     char tmp[currentLen];
     memset(tmp, 0, currentLen);
@@ -128,8 +126,6 @@ void CRegistartion::sendRegRequest()
 
 void CRegistartion::on_accept_button_clicked()
 {
-    bool regSuccess = false;
-
     readAllFields();
 
     QString warningMessage;
@@ -138,34 +134,40 @@ void CRegistartion::on_accept_button_clicked()
 
     if ( warningMessage.isEmpty() )
     {
+        m_pNet->SendRequestCode(REGISTER);
         sendRegRequest();
 
-        char answer = -1;
-        m_pNet->NonBlockingRecv((char*)&answer, 1, 10);
+        server_response_st response;
+        memset( (void*)&response, 0, sizeof(response) );
 
-        regSuccess = (answer == SERVER_OK) ? true : false;
+        m_pNet->NonBlockingRecv( (char*)&response, sizeof(response) );
 
-        if ( regSuccess )
+        if( response.response_code == SERVER_OK )
         {
-            QMessageBox::information(this, "Info", "Account have been created!");
+            QMessageBox::StandardButton button =
+                    QMessageBox::information(this, "Info", "New account have been created!",
+                                             QMessageBox::Ok);
+
+            if( button == QMessageBox::Ok )
+            {
+                this->close();
+            }
+        }
+        else
+        {
+            QMessageBox::warning(this, "Warning!",
+                                 QString(response.msg_buffer) );
         }
     }
     else
     {
         showWarningMessage(warningMessage);
-        regSuccess = false;
     }
 }
 
 void CRegistartion::on_checkBox_clicked()
 {
     setUpEchoMode( !ui->checkBox->isChecked() );
-}
-
-void CRegistartion::on_openIcon_clicked()
-{
-    m_pUser->SetUserIcon( QFileDialog::getOpenFileName(this, "Open icon", "", "*.png, *.ico") );
-    ui->userIcon_label->setPixmap( *m_pUser->getUserIcon() );
 }
 
 void CRegistartion::on_cancel_button_clicked()

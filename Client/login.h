@@ -1,10 +1,15 @@
 #ifndef LOGIN_H
 #define LOGIN_H
 
+#include <string>
+
+#include <QDebug>
 #include <QDialog>
 #include <QMessageBox>
+
 #include "cclientnetwork.h"
-//#include <QElapsedTimer>
+#include "cregistartion.h"
+#include "mainwindow.h"
 
 namespace Ui {
 class login;
@@ -17,6 +22,13 @@ class login : public QDialog
 public:
     explicit login(QWidget *parent = 0);
     ~login();
+
+private:
+    void UiSetUp();
+    void ReadField();
+    void SendAuth(auth_st user);
+    void GetUserInfo(user_st& user_data);
+    void GetContactList(user_st ** contacts, server_response_st &response, int * count);
 
 private slots:
     void on_checkBox_clicked();
@@ -41,6 +53,7 @@ private:
     QString m_login;
     QString m_pass;
     CClientNetwork * m_pNet;
+
     bool m_rememberPass;
     bool m_validLoginLen;
     bool m_validPasswLen;

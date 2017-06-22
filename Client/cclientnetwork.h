@@ -2,12 +2,23 @@
 #define CCLIENTNETWORK_H
 
 #include <string>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
+
+#include <QDebug>
+
 #include <arpa/inet.h>
+#include <netinet/in.h>
+#include <pthread.h>
+#include <sys/socket.h>
 #include <sys/time.h>
+#include <sys/types.h>
 #include <unistd.h>
+
+#include <netinet/in.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <sys/sendfile.h>
+
+#include <stdio.h>
 
 #include "pm_packets.h"
 
@@ -27,16 +38,19 @@ public:
     CClientNetwork& operator =(const CClientNetwork&)   = delete;
     ~CClientNetwork();
 
-    bool connectToServer();
+    bool ConnectToServer();
     bool Send(const char *message, int len);
-    bool shutDown();
-    void Recv(char* buff, int len);
+    bool SendRequestCode(char cmd);
+    bool SendFile(const char * fileName);
+    bool ShutDown();
+    ssize_t Recv(char* buff, int len);
     bool NonBlockingRecv(char *buf, int len, int timeToWait = 5);
 
 private:
-    bool initSocket();
-    bool initSructAddr();
-    bool initClient();
+    bool InitSocket();
+    bool InitSructAddr();
+    bool InitClient();
+    void initialize_flag();
 
 private:
     std::string m_serverIpAddr;

@@ -4,8 +4,7 @@
 #include <stdlib.h>
 
 #define BYTE unsigned char
-#define BUFFER_SIZE 256
-#define WAIT_FOR_ANSWER 5000
+#define BUFFER_SIZE 128
 
 /* requests from client */
 #define NONE        0x00
@@ -17,14 +16,15 @@
 #define AUTH        0x06
 #define ADDCONTACT  0x07
 #define LISTCONTACT 0x08
+#define UPDSTATUS   0x09
 
 /* responses from server */
-#define SERVER_OK               0x00
-#define SERVER_REGISTER_FAIL    0x01
-#define SERVER_AUTH_FAIL        0x02
-#define SERVER_MSG              0x02
-#define SERVER_CONTACT          0x03
-#define SERVER_UNKWNERR 0xff
+#define SERVER_OK               0x01
+#define SERVER_REGISTER_FAIL    0x02
+#define SERVER_AUTH_FAIL        0x03
+#define SERVER_MSG              0x04
+#define SERVER_UPDATE           0x05
+#define SERVER_FAIL             0xff
 
 /* user state */
 enum State
@@ -49,6 +49,7 @@ struct register_st
  * users */
 struct user_st
 {
+    int id;
     char username[BUFFER_SIZE];
     char firstname[BUFFER_SIZE];
     char secondname[BUFFER_SIZE];
@@ -66,9 +67,11 @@ struct auth_st
  * sending messages */
 struct msg_st
 {
-    int who;            /* who's sending message */
-    int whom;           /* who would recieve */
-    char* msg_body;     /* message body */
+    int who;                    /* who's sending message */
+    int whom;                   /* who would recieve */
+    char mime_type[BUFFER_SIZE];
+    char file_name[BUFFER_SIZE];
+    size_t msg_size;
 };
 
 /* structure for adding new contanct

@@ -1,21 +1,23 @@
 #include "cclientnetwork.h"
-#include <QDebug>
+
 
 CClientNetwork::CClientNetwork(const std::string &ipAddr, const int port) :
     m_serverIpAddr(ipAddr), m_port(port)
 {
-    initClient();
+    InitClient();
 }
 
 CClientNetwork::~CClientNetwork()
 {
+    // break communication
+    ShutDown();
 }
 
-bool CClientNetwork::connectToServer()
+bool CClientNetwork::ConnectToServer()
 {
     bool connected = false;
 
-    if( connect(m_socket, (struct sockaddr *)&m_serverAddr, sizeof(m_serverAddr)) < 0)
+    if( connect(m_socket, (struct sockaddr *)&m_serverAddr, sizeof(m_serverAddr)) != 0)
     {
         connected = false;
     }
@@ -33,15 +35,52 @@ bool CClientNetwork::Send(const char *message, int len)
     return true;
 }
 
-bool CClientNetwork::shutDown()
+bool CClientNetwork::SendRequestCode(char cmd)
 {
-    shutdown(m_socket, 0);
-    return true; // !!!!!!
+    return Send( (const char*)&cmd, 1 );
 }
 
-void CClientNetwork::Recv(char* buff, int len)
+bool CClientNetwork::SendFile(const char *fileName)
 {
-    recv(m_socket, buff, len, 0);
+    int fd;
+    int sent_bytes = 0;
+    struct stat file_stat;
+    int offset = 0;
+    int remain_data;
+
+    fd = open(fileName, O_RDONLY);
+
+    if (fd == -1)
+    {
+        qDebug() << "Error opening file -->";
+        return false;
+    }
+
+    if (fstat(fd, &file_stat) < 0)
+    {
+        qDebug() << "Error fstat -->";
+        return false;
+    }
+
+    remain_data = file_stat.st_size;
+
+    while (((sent_bytes = sendfile(m_socket, fd, (off_t*)&offset, BUFSIZ)) > 0) && (remain_data > 0))
+    {
+        remain_data -= sent_bytes;
+        qDebug() << "send bytes: " << sent_bytes;
+    }
+
+    return true;
+}
+
+bool CClientNetwork::ShutDown()
+{
+    return (0 == shutdown(m_socket, SHUT_RDWR)) ? true : false;
+}
+
+ssize_t CClientNetwork::Recv(char* buff, int len)
+{
+    return recv(m_socket, buff, len, 0);
 }
 
 bool CClientNetwork::NonBlockingRecv(char *buf, int len, int timeToWait)
@@ -57,30 +96,30 @@ bool CClientNetwork::NonBlockingRecv(char *buf, int len, int timeToWait)
     /* Wait up to five seconds. */
     waitUntill.tv_sec = timeToWait;
     waitUntill.tv_usec = 0;
-    int retVal = select(m_socket, &read_s, NULL, NULL, &waitUntill);
+    int retVal = select(m_socket +1 , &read_s, NULL, NULL, &waitUntill);
 
     /* Don’t rely on the value of tv now! */
-
     if (retVal == -1)
     {
         qDebug() << "select() error!";
     }
     else if (retVal)
     {
-        qDebug() << "Data is available now.\n";
         FD_ISSET(m_socket, &read_s); // !!!
+        qDebug() << "buf ch";
         Recv(buf, len);
         readSuccess = true;
+        qDebug() << "ad";
     }
     else
     {
-        qDebug() << "No data within five seconds.\n";
+        ; /* !!! */
     }
 
     return readSuccess;
 }
 
-bool CClientNetwork::initSocket()
+bool CClientNetwork::InitSocket()
 {
     bool initSuccess = false;
 
@@ -96,9 +135,9 @@ bool CClientNetwork::initSocket()
     return initSuccess;
 }
 
-bool CClientNetwork::initSructAddr()
+bool CClientNetwork::InitSructAddr()
 {
-    memset(&m_serverAddr, '0', sizeof(m_serverAddr));
+    memset(&m_serverAddr, 0, sizeof(m_serverAddr));
 
     m_serverAddr.sin_family = AF_INET;
     m_serverAddr.sin_port = htons(m_port);
@@ -107,13 +146,13 @@ bool CClientNetwork::initSructAddr()
     return true;
 }
 
-bool CClientNetwork::initClient()
+bool CClientNetwork::InitClient()
 {
-    bool initSuccess = initSocket();
+    bool initSuccess = InitSocket();
 
     if ( initSuccess )
     {
-        initSuccess = initSructAddr();
+        initSuccess = InitSructAddr();
     }
 
 

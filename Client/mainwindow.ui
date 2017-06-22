@@ -17,10 +17,10 @@
    <widget class="QGroupBox" name="groupBox">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>120</y>
-      <width>200</width>
-      <height>330</height>
+      <x>290</x>
+      <y>10</y>
+      <width>300</width>
+      <height>315</height>
      </rect>
     </property>
     <property name="title">
@@ -31,7 +31,7 @@
       <rect>
        <x>10</x>
        <y>30</y>
-       <width>180</width>
+       <width>280</width>
        <height>25</height>
       </rect>
      </property>
@@ -41,8 +41,8 @@
       <rect>
        <x>10</x>
        <y>60</y>
-       <width>180</width>
-       <height>260</height>
+       <width>280</width>
+       <height>245</height>
       </rect>
      </property>
     </widget>
@@ -50,21 +50,24 @@
    <widget class="QGroupBox" name="groupBox_2">
     <property name="geometry">
      <rect>
-      <x>210</x>
+      <x>9</x>
       <y>325</y>
-      <width>380</width>
+      <width>580</width>
       <height>125</height>
      </rect>
     </property>
     <property name="title">
      <string>Message</string>
     </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
     <widget class="QLineEdit" name="message_line">
      <property name="geometry">
       <rect>
        <x>10</x>
        <y>90</y>
-       <width>160</width>
+       <width>360</width>
        <height>25</height>
       </rect>
      </property>
@@ -72,7 +75,7 @@
     <widget class="QPushButton" name="send_button">
      <property name="geometry">
       <rect>
-       <x>280</x>
+       <x>480</x>
        <y>90</y>
        <width>90</width>
        <height>25</height>
@@ -85,7 +88,7 @@
     <widget class="QPushButton" name="attach_file_button">
      <property name="geometry">
       <rect>
-       <x>180</x>
+       <x>380</x>
        <y>90</y>
        <width>90</width>
        <height>25</height>
@@ -95,12 +98,12 @@
       <string>Add file</string>
      </property>
     </widget>
-    <widget class="QListView" name="listView_2">
+    <widget class="QListWidget" name="disp_msg">
      <property name="geometry">
       <rect>
        <x>10</x>
        <y>30</y>
-       <width>360</width>
+       <width>560</width>
        <height>50</height>
       </rect>
      </property>
@@ -111,32 +114,19 @@
      <rect>
       <x>10</x>
       <y>10</y>
-      <width>200</width>
-      <height>110</height>
+      <width>271</width>
+      <height>115</height>
      </rect>
     </property>
     <property name="title">
      <string>User</string>
     </property>
-    <widget class="QLabel" name="userIcon">
+    <widget class="QLabel" name="userName">
      <property name="geometry">
       <rect>
        <x>10</x>
        <y>30</y>
-       <width>60</width>
-       <height>65</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>  &lt;icon&gt;</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="userName">
-     <property name="geometry">
-      <rect>
-       <x>90</x>
-       <y>30</y>
-       <width>100</width>
+       <width>160</width>
        <height>30</height>
       </rect>
      </property>
@@ -147,11 +137,83 @@
     <widget class="QComboBox" name="comboBox">
      <property name="geometry">
       <rect>
-       <x>90</x>
+       <x>10</x>
        <y>70</y>
-       <width>100</width>
+       <width>150</width>
        <height>30</height>
       </rect>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButton_2">
+     <property name="geometry">
+      <rect>
+       <x>170</x>
+       <y>70</y>
+       <width>90</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Change state</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QGroupBox" name="groupBox_4">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>130</y>
+      <width>270</width>
+      <height>195</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Find new contacts</string>
+    </property>
+    <widget class="QLineEdit" name="lineEdit">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>30</y>
+       <width>140</width>
+       <height>25</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="search_new_button">
+     <property name="geometry">
+      <rect>
+       <x>160</x>
+       <y>30</y>
+       <width>100</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Add conatct</string>
+     </property>
+    </widget>
+    <widget class="QListWidget" name="newContacts">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>70</y>
+       <width>250</width>
+       <height>80</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButton">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>160</y>
+       <width>250</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Clear</string>
      </property>
     </widget>
    </widget>
@@ -162,13 +224,14 @@
      <x>0</x>
      <y>0</y>
      <width>600</width>
-     <height>22</height>
+     <height>19</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
     <property name="title">
      <string>File</string>
     </property>
+    <addaction name="actionLogout"/>
     <addaction name="actionExit"/>
    </widget>
    <widget class="QMenu" name="menuAbout">
@@ -201,6 +264,11 @@
   <action name="actionAbout_application">
    <property name="text">
     <string>About application</string>
+   </property>
+  </action>
+  <action name="actionLogout">
+   <property name="text">
+    <string>Logout</string>
    </property>
   </action>
  </widget>
